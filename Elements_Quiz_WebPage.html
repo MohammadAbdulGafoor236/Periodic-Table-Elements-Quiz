@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Element Identification Quiz</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      background-color: #f0f0f0;
+      color: #333;
+    }
+    .container {
+      margin-top: 50px;
+    }
+    .element-details {
+      font-size: 1.5em;
+      font-weight: bold;
+      margin-bottom: 15px;
+    }
+    .element-symbol {
+      font-size: 4em;
+      color: #4a90e2;
+      font-weight: bold;
+    }
+    
+    .elementNam
+    {
+      font-size: 3em;
+      color: green;
+      font-weight: bold;
+    }
+    .button-group {
+      margin: 20px;
+    }
+    .btn {
+      background-color: grey;
+      padding: 10px 20px;
+      font-size: 1em;
+      margin: 5px;
+      cursor: pointer;
+      border: none;
+      color: white;
+      border-radius: 5px;
+      transition: background-color 0.3s;
+    }
+    .metal { background-color: #3498db; }
+    .non-metal { background-color: #e74c3c; }
+    .metalloid { background-color: #2ecc71; }
+    #feedback {
+      font-size: 1.5em;
+      margin-top: 20px;
+    }
+    .navigation-buttons {
+      margin-top: 30px; /* Space above navigation buttons */
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h1>Element Identification Quiz</h1>
+  <p>Identify whether the element is a Metal, Non-metal, or Metalloid.</p>
+  <div class="element-details">
+    <div class="element-symbol" id="elementSymbol">H</div>
+    <div class="elementNam" id="elementName">Hydrogen</div>
+    <div id="atomicNumber">Atomic Number: 1</div>
+  </div>
+  <div class="button-group">
+    <button class="btn metal" onclick="checkAnswer('metal')">Metal</button>
+    <button class="btn non-metal" onclick="checkAnswer('non-metal')">Non-metal</button>
+    <button class="btn metalloid" onclick="checkAnswer('metalloid')">Metalloid</button>
+  </div>
+  <div id="feedback"></div>
+  <div class="navigation-buttons">
+    <button class="btn" onclick="navigateBack()">Back</button>
+    <button class="btn" onclick="navigateForward()">Forward</button>
+  </div>
+</div>
+
+<script>
+  // Sample list of elements
+  const elements = [
+  { name: 'Hydrogen', symbol: 'H', atomicNumber: 1, type: 'non-metal' },
+  { name: 'Helium', symbol: 'He', atomicNumber: 2, type: 'non-metal' },
+  { name: 'Lithium', symbol: 'Li', atomicNumber: 3, type: 'metal' },
+  { name: 'Beryllium', symbol: 'Be', atomicNumber: 4, type: 'metal' },
+  { name: 'Boron', symbol: 'B', atomicNumber: 5, type: 'metalloid' },
+  { name: 'Carbon', symbol: 'C', atomicNumber: 6, type: 'non-metal' },
+  { name: 'Nitrogen', symbol: 'N', atomicNumber: 7, type: 'non-metal' },
+  { name: 'Oxygen', symbol: 'O', atomicNumber: 8, type: 'non-metal' },
+  { name: 'Fluorine', symbol: 'F', atomicNumber: 9, type: 'non-metal' },
+  { name: 'Neon', symbol: 'Ne', atomicNumber: 10, type: 'non-metal' },
+  { name: 'Sodium', symbol: 'Na', atomicNumber: 11, type: 'metal' },
+  { name: 'Magnesium', symbol: 'Mg', atomicNumber: 12, type: 'metal' },
+  { name: 'Aluminum', symbol: 'Al', atomicNumber: 13, type: 'metal' },
+  { name: 'Silicon', symbol: 'Si', atomicNumber: 14, type: 'metalloid' },
+  { name: 'Phosphorus', symbol: 'P', atomicNumber: 15, type: 'non-metal' },
+  { name: 'Sulfur', symbol: 'S', atomicNumber: 16, type: 'non-metal' },
+  { name: 'Chlorine', symbol: 'Cl', atomicNumber: 17, type: 'non-metal' },
+  { name: 'Argon', symbol: 'Ar', atomicNumber: 18, type: 'non-metal' },
+  { name: 'Potassium', symbol: 'K', atomicNumber: 19, type: 'metal' },
+  { name: 'Calcium', symbol: 'Ca', atomicNumber: 20, type: 'metal' },
+  { name: 'Scandium', symbol: 'Sc', atomicNumber: 21, type: 'metal' },
+  { name: 'Titanium', symbol: 'Ti', atomicNumber: 22, type: 'metal' },
+  { name: 'Vanadium', symbol: 'V', atomicNumber: 23, type: 'metal' },
+  { name: 'Chromium', symbol: 'Cr', atomicNumber: 24, type: 'metal' },
+  { name: 'Manganese', symbol: 'Mn', atomicNumber: 25, type: 'metal' },
+  { name: 'Iron', symbol: 'Fe', atomicNumber: 26, type: 'metal' },
+  { name: 'Cobalt', symbol: 'Co', atomicNumber: 27, type: 'metal' },
+  { name: 'Nickel', symbol: 'Ni', atomicNumber: 28, type: 'metal' },
+  { name: 'Copper', symbol: 'Cu', atomicNumber: 29, type: 'metal' },
+  { name: 'Zinc', symbol: 'Zn', atomicNumber: 30, type: 'metal' },
+  { name: 'Gallium', symbol: 'Ga', atomicNumber: 31, type: 'metal' },
+  { name: 'Germanium', symbol: 'Ge', atomicNumber: 32, type: 'metalloid' },
+  { name: 'Arsenic', symbol: 'As', atomicNumber: 33, type: 'metalloid' },
+  { name: 'Selenium', symbol: 'Se', atomicNumber: 34, type: 'non-metal' },
+  { name: 'Bromine', symbol: 'Br', atomicNumber: 35, type: 'non-metal' },
+  { name: 'Krypton', symbol: 'Kr', atomicNumber: 36, type: 'non-metal' },
+  { name: 'Rubidium', symbol: 'Rb', atomicNumber: 37, type: 'metal' },
+  { name: 'Strontium', symbol: 'Sr', atomicNumber: 38, type: 'metal' },
+  { name: 'Yttrium', symbol: 'Y', atomicNumber: 39, type: 'metal' },
+  { name: 'Zirconium', symbol: 'Zr', atomicNumber: 40, type: 'metal' },
+  { name: 'Niobium', symbol: 'Nb', atomicNumber: 41, type: 'metal' },
+  { name: 'Molybdenum', symbol: 'Mo', atomicNumber: 42, type: 'metal' },
+  { name: 'Technetium', symbol: 'Tc', atomicNumber: 43, type: 'metal' },
+  { name: 'Ruthenium', symbol: 'Ru', atomicNumber: 44, type: 'metal' },
+  { name: 'Rhodium', symbol: 'Rh', atomicNumber: 45, type: 'metal' },
+  { name: 'Palladium', symbol: 'Pd', atomicNumber: 46, type: 'metal' },
+  { name: 'Silver', symbol: 'Ag', atomicNumber: 47, type: 'metal' },
+  { name: 'Cadmium', symbol: 'Cd', atomicNumber: 48, type: 'metal' },
+  { name: 'Indium', symbol: 'In', atomicNumber: 49, type: 'metal' },
+  { name: 'Tin', symbol: 'Sn', atomicNumber: 50, type: 'metal' },
+  { name: 'Antimony', symbol: 'Sb', atomicNumber: 51, type: 'metalloid' },
+  { name: 'Tellurium', symbol: 'Te', atomicNumber: 52, type: 'metalloid' },
+  { name: 'Iodine', symbol: 'I', atomicNumber: 53, type: 'non-metal' },
+  { name: 'Xenon', symbol: 'Xe', atomicNumber: 54, type: 'non-metal' },
+  { name: 'Cesium', symbol: 'Cs', atomicNumber: 55, type: 'metal' },
+  { name: 'Barium', symbol: 'Ba', atomicNumber: 56, type: 'metal' },
+  { name: 'Lanthanum', symbol: 'La', atomicNumber: 57, type: 'metal' },
+  { name: 'Cerium', symbol: 'Ce', atomicNumber: 58, type: 'metal' },
+  { name: 'Praseodymium', symbol: 'Pr', atomicNumber: 59, type: 'metal' },
+  { name: 'Neodymium', symbol: 'Nd', atomicNumber: 60, type: 'metal' },
+  { name: 'Promethium', symbol: 'Pm', atomicNumber: 61, type: 'metal' },
+  { name: 'Samarium', symbol: 'Sm', atomicNumber: 62, type: 'metal' },
+  { name: 'Europium', symbol: 'Eu', atomicNumber: 63, type: 'metal' },
+  { name: 'Gadolinium', symbol: 'Gd', atomicNumber: 64, type: 'metal' },
+  { name: 'Terbium', symbol: 'Tb', atomicNumber: 65, type: 'metal' },
+  { name: 'Dysprosium', symbol: 'Dy', atomicNumber: 66, type: 'metal' },
+  { name: 'Holmium', symbol: 'Ho', atomicNumber: 67, type: 'metal' },
+  { name: 'Erbium', symbol: 'Er', atomicNumber: 68, type: 'metal' },
+  { name: 'Thulium', symbol: 'Tm', atomicNumber: 69, type: 'metal' },
+  { name: 'Ytterbium', symbol: 'Yb', atomicNumber: 70, type: 'metal' },
+  { name: 'Lutetium', symbol: 'Lu', atomicNumber: 71, type: 'metal' },
+  { name: 'Hafnium', symbol: 'Hf', atomicNumber: 72, type: 'metal' },
+  { name: 'Tantalum', symbol: 'Ta', atomicNumber: 73, type: 'metal' },
+  { name: 'Tungsten', symbol: 'W', atomicNumber: 74, type: 'metal' },
+  { name: 'Rhenium', symbol: 'Re', atomicNumber: 75, type: 'metal' },
+  { name: 'Osmium', symbol: 'Os', atomicNumber: 76, type: 'metal' },
+  { name: 'Iridium', symbol: 'Ir', atomicNumber: 77, type: 'metal' },
+  { name: 'Platinum', symbol: 'Pt', atomicNumber: 78, type: 'metal' },
+  { name: 'Gold', symbol: 'Au', atomicNumber: 79, type: 'metal' },
+  { name: 'Mercury', symbol: 'Hg', atomicNumber: 80, type: 'metal' },
+  { name: 'Thallium', symbol: 'Tl', atomicNumber: 81, type: 'metal' },
+  { name: 'Lead', symbol: 'Pb', atomicNumber: 82, type: 'metal' },
+  { name: 'Bismuth', symbol: 'Bi', atomicNumber: 83, type: 'metal' },
+  { name: 'Polonium', symbol: 'Po', atomicNumber: 84, type: 'metalloid' },
+  { name: 'Astatine', symbol: 'At', atomicNumber: 85, type: 'metalloid' },
+  { name: 'Radon', symbol: 'Rn', atomicNumber: 86, type: 'non-metal' },
+  { name: 'Francium', symbol: 'Fr', atomicNumber: 87, type: 'metal' },
+  { name: 'Radium', symbol: 'Ra', atomicNumber: 88, type: 'metal' },
+  { name: 'Actinium', symbol: 'Ac', atomicNumber: 89, type: 'metal' },
+  { name: 'Thorium', symbol: 'Th', atomicNumber: 90, type: 'metal' },
+  { name: 'Protactinium', symbol: 'Pa', atomicNumber: 91, type: 'metal' },
+  { name: 'Uranium', symbol: 'U', atomicNumber: 92, type: 'metal' },
+  { name: 'Neptunium', symbol: 'Np', atomicNumber: 93, type: 'metal' },
+  { name: 'Plutonium', symbol: 'Pu', atomicNumber: 94, type: 'metal' },
+  { name: 'Americium', symbol: 'Am', atomicNumber: 95, type: 'metal' },
+  { name: 'Curium', symbol: 'Cm', atomicNumber: 96, type: 'metal' },
+  { name: 'Berkelium', symbol: 'Bk', atomicNumber: 97, type: 'metal' },
+  { name: 'Californium', symbol: 'Cf', atomicNumber: 98, type: 'metal' },
+  { name: 'Einsteinium', symbol: 'Es', atomicNumber: 99, type: 'metal' },
+  { name: 'Fermium', symbol: 'Fm', atomicNumber: 100, type: 'metal' },
+  { name: 'Mendelevium', symbol: 'Md', atomicNumber: 101, type: 'metal' },
+  { name: 'Nobelium', symbol: 'No', atomicNumber: 102, type: 'metal' },
+  { name: 'Lawrencium', symbol: 'Lr', atomicNumber: 103, type: 'metal' },
+  { name: 'Rutherfordium', symbol: 'Rf', atomicNumber: 104, type: 'metal' },
+  { name: 'Dubnium', symbol: 'Db', atomicNumber: 105, type: 'metal' },
+  { name: 'Seaborgium', symbol: 'Sg', atomicNumber: 106, type: 'metal' },
+  { name: 'Bohrium', symbol: 'Bh', atomicNumber: 107, type: 'metal' },
+  { name: 'Hassium', symbol: 'Hs', atomicNumber: 108, type: 'metal' },
+  { name: 'Meitnerium', symbol: 'Mt', atomicNumber: 109, type: 'metal' },
+  { name: 'Darmstadtium', symbol: 'Ds', atomicNumber: 110, type: 'metal' },
+  { name: 'Roentgenium', symbol: 'Rg', atomicNumber: 111, type: 'metal' },
+  { name: 'Copernicium', symbol: 'Cn', atomicNumber: 112, type: 'metal' },
+  { name: 'Nihonium', symbol: 'Nh', atomicNumber: 113, type: 'metal' },
+  { name: 'Flerovium', symbol: 'Fl', atomicNumber: 114, type: 'metal' },
+  { name: 'Moscovium', symbol: 'Mc', atomicNumber: 115, type: 'metal' },
+  { name: 'Livermorium', symbol: 'Lv', atomicNumber: 116, type: 'metal' },
+  { name: 'Tennessine', symbol: 'Ts', atomicNumber: 117, type: 'metalloid' },
+  { name: 'Oganesson', symbol: 'Og', atomicNumber: 118, type: 'non-metal' }
+];
+
+
+  let currentElement;
+  let historyStack = [];
+  let forwardStack = [];
+  let canLoadNewElement = true; // Flag to control loading of new elements
+
+  // Function to load a new random element
+  function loadNewElement() {
+    if (!canLoadNewElement) return; // Prevent loading if feedback is being shown
+
+    if (currentElement) {
+      historyStack.push(currentElement);
+      if (historyStack.length > 3) historyStack.shift(); // Limit to 3 steps back
+      forwardStack = []; // Clear forward stack when moving to a new question
+    }
+    
+    let previousElement = currentElement;
+    do {
+      currentElement = elements[Math.floor(Math.random() * elements.length)];
+    } while (currentElement === previousElement); // Ensure a different element
+
+    displayElement(currentElement);
+  }
+
+  // Function to display element details
+  function displayElement(element) {
+    document.getElementById('elementName').textContent = element.name;
+    document.getElementById('elementSymbol').textContent = element.symbol;
+    document.getElementById('atomicNumber').textContent = "Atomic Number: " + element.atomicNumber;
+    document.getElementById('feedback').textContent = ''; // Clear feedback on loading new element
+  }
+
+  // Function to check answer and give feedback
+  function checkAnswer(selectedType) {
+    const feedback = document.getElementById('feedback');
+    if (selectedType === currentElement.type) {
+      feedback.textContent = "Correct!";
+      feedback.style.color = "green";
+      canLoadNewElement = true; // Allow loading a new element
+      setTimeout(loadNewElement, 1000); // Load new element after 1 second
+    } else {
+      feedback.textContent = "Incorrect! The correct answer was " + capitalize(currentElement.type) + ".";
+      feedback.style.color = "red";
+      canLoadNewElement = false; // Prevent loading a new element
+    }
+  }
+
+  // Function to capitalize the first letter of feedback message
+  function capitalize(string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+  }
+
+  // Function to navigate back
+  function navigateBack() {
+    if (historyStack.length > 0) {
+      forwardStack.push(currentElement);
+      currentElement = historyStack.pop();
+      displayElement(currentElement);
+    }
+  }
+
+  // Function to navigate forward
+  function navigateForward() {
+    if (forwardStack.length > 0) {
+      historyStack.push(currentElement);
+      currentElement = forwardStack.pop();
+      displayElement(currentElement);
+    }
+  }
+
+  // Initial load
+  loadNewElement();
+</script>
+
+</body>
+</html>
